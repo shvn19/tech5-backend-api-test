@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
+import { MailerService } from '@nestjs-modules/mailer';
+import { join } from 'path';
 
 @Injectable()
 export class AppService {
+  constructor(
+    private readonly mailService: MailerService,
+    ) {}
   getHello(): string {
     return 'Hello World!'
   }
 
-  getDoc(select: string, data: object): any {
+  async getDoc(select: string, data: object) {
     const data1 = {
       ubndxa: "UBND xa BCD",
       hoten_nguoiyeucau: "Hà Nguyễn",
@@ -24,7 +29,8 @@ export class AppService {
       mucdich: 'Lấy chồng',
       ngay: '09',
       thang: '07',
-      nam: '2022'
+      nam: '2022',
+      toEmail: 'ha.nguyen@teqie.io'
     }
     const data2 = {
       female_name: "Tuấn ĐInh",
@@ -44,9 +50,10 @@ export class AppService {
       coquandangki: "UBND xã 69",
       ngaydangki: '09',
       thangdangki: '07',
-      namdangki: '2022'
+      namdangki: '2022',
+      toEmail: 'tuan.dinh@teqie.io'
     }
-    
+
     let pathFile
     if(select === '1'){
       data = data1
@@ -89,8 +96,18 @@ export class AppService {
     // file or res.send it with express for example.
     const date = new Date();
     const id = date.getMilliseconds();
-    fs.writeFileSync(path.resolve(__dirname, `../public/${pathFile}-${id}.docx`), buf);
-
+    fs.writeFileSync(path.resolve(__dirname, `../src/mails/${pathFile}-${id}.docx`), buf);
+    var response = await this.mailService.sendMail({
+      to: data['toEmail'],
+      from: 'lequangminh10081990@gmail.com',
+      subject: 'File Attachment',
+      html: "<h1>File Attachment</h1>",
+      attachments:[{
+        path:    join(__dirname, `../src/mails/${pathFile}-${id}.docx`),
+        filename:'result.docx',
+        contentDisposition:"attachment"
+      }]
+    });
     return;
   }
 }
