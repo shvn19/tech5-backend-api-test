@@ -56,10 +56,10 @@ export class AppService {
 
     let pathFile
     if(select === '1'){
-      data = data1
+      data = Object.keys(data).length !== 0 ? data : data1
       pathFile = 'to-khai-cap-giay-xac-nhan-tinh-trang-hon-nhan'
     } else {
-      data = data2
+      data = Object.keys(data).length !== 0 ? data : data2
       pathFile = 'Mau_TK_dang_ky_ket_hon'
     }
     console.log('in service, getdoc');
