@@ -6,7 +6,55 @@ export class AppService {
     return 'Hello World!'
   }
 
-  getDoc(): any {
+  getDoc(select: string, data: object): any {
+    const data1 = {
+      ubndxa: "UBND xa BCD",
+      hoten_nguoiyeucau: "Hà Nguyễn",
+      noicutru_nguoiyeucau: "69 96 Street, Hồ Chí Minh City, VIệt Nam",
+      cmnd_nguoiyeucau: "123456789",
+      quanhe: "Cha",
+      hoten_nguoiduocyeucau: "Tuấn Đinh",
+      birthday: '01/01/2000',
+      gioitinh: 'THứ 3',
+      dantoc: 'Kinh',
+      quoctich: 'Việt Nam',
+      noicutru_nguoiduocyeucau: '96 69 Street, Biên Hòa, Đồng Nai',
+      cmnd_nguoiduocyeucau: '123456123',
+      tinhtranghonnhan: 'Độc thân',
+      mucdich: 'Lấy chồng',
+      ngay: '09',
+      thang: '07',
+      nam: '2022'
+    }
+    const data2 = {
+      female_name: "Tuấn ĐInh",
+      female_birthday: '20/02/2020',
+      female_dantoc: 'Kinh',
+      female_quoctich: 'Việt Nam',
+      female_noicutru: 'Biên Hòa, Đồng Nai',
+      female_cmnd: "123456789",
+      female_lankethon: '10',
+      male_name: "Hà Nguyễn",
+      male_birthday: '20/02/2020',
+      male_dantoc: 'Kinh',
+      male_quoctich: 'Việt Nam',
+      male_noicutru: 'Biên Hòa, Đồng Nai',
+      male_cmnd: "123456789",
+      male_lankethon: '10',
+      coquandangki: "UBND xã 69",
+      ngaydangki: '09',
+      thangdangki: '07',
+      namdangki: '2022'
+    }
+    
+    let pathFile
+    if(select === '1'){
+      data = data1
+      pathFile = 'to-khai-cap-giay-xac-nhan-tinh-trang-hon-nhan'
+    } else {
+      data = data2
+      pathFile = 'Mau_TK_dang_ky_ket_hon'
+    }
     console.log('in service, getdoc');
     const PizZip = require("pizzip");
     const Docxtemplater = require("docxtemplater");
@@ -16,7 +64,7 @@ export class AppService {
 
     // Load the docx file as binary content
     const content = fs.readFileSync(
-        path.resolve(__dirname, "../public/tag-example.docx"),
+        path.resolve(__dirname, `../public/${pathFile}.docx`),
         "binary"
     );
 
@@ -28,12 +76,7 @@ export class AppService {
     });
 
     // Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
-    doc.render({
-        first_name: "John",
-        last_name: "Doe",
-        phone: "0652455478",
-        description: "New Website",
-    });
+    doc.render(data);
 
     const buf = doc.getZip().generate({
         type: "nodebuffer",
@@ -44,7 +87,9 @@ export class AppService {
 
     // buf is a nodejs Buffer, you can either write it to a
     // file or res.send it with express for example.
-    fs.writeFileSync(path.resolve(__dirname, "../public/output.docx"), buf);
+    const date = new Date();
+    const id = date.getMilliseconds();
+    fs.writeFileSync(path.resolve(__dirname, `../public/${pathFile}-${id}.docx`), buf);
 
     return;
   }
