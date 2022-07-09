@@ -10,8 +10,13 @@ export class AppController {
     private readonly mailService: MailerService,
     ) {}
 
+    @Get()
+    getHello(){
+      return this.appService.getHello()
+    }
+
   @Get('/merge/:select')
-  getHello(@Param('select') select: string, @Body() data: object): string {
+  getDoc(@Param('select') select: string, @Body() data: object): string {
     // return this.appService.getHello();
     // console.log('vao duoc controller');
     const t: any = this.appService.getDoc(select, data);
